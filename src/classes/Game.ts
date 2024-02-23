@@ -27,6 +27,10 @@ class Game {
             .map(() => Array(7).fill(0));
     }
 
+    public getStatus(): GameStatus {
+        return this.status;
+    }
+
     public printBoard(): string[] {
         const screen: string[] = Array(6).fill('');
         this.board.forEach((row, n) => {
@@ -41,3 +45,4 @@ class Game {
 }
 
 export const game = new Game();
+export { GameStatus };
