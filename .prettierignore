@@ -1,6 +1,7 @@
 **/.git
 **/.svn
 **/.hg
+**/.husky
 **/node_modules
 
 tsconfig.json
