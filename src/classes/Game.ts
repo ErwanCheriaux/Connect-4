@@ -1,7 +1,13 @@
 enum BoardItem {
-    ' ' = 0,
-    'X' = 1,
-    'O' = 2,
+    EMPTY = 0,
+    USER = 1,
+    HOUSE = 2,
+}
+
+enum ScreenItem {
+    ' ' = BoardItem.EMPTY,
+    'X' = BoardItem.USER,
+    'O' = BoardItem.HOUSE,
 }
 
 enum GameStatus {
@@ -24,11 +30,21 @@ class Game {
         this.status = GameStatus.NEW;
         this.board = Array(6)
             .fill(null)
-            .map(() => Array(7).fill(0));
+            .map(() => Array(7).fill(BoardItem.EMPTY));
     }
 
     public getStatus(): GameStatus {
         return this.status;
+    }
+
+    public userMove(col: number): void {
+        for (let row = 6; row--; row > 0) {
+            if (!this.board[row][col]) {
+                this.board[row][col] = BoardItem.USER;
+                return;
+            }
+        }
+        throw new Error('Column full already!');
     }
 
     public printBoard(): string[] {
@@ -36,7 +52,7 @@ class Game {
         this.board.forEach((row, n) => {
             screen[n] += '|';
             row.forEach((col) => {
-                screen[n] += BoardItem[col] + '|';
+                screen[n] += ScreenItem[col] + '|';
             });
         });
 
