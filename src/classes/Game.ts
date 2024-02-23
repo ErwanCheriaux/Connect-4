@@ -38,12 +38,18 @@ class Game {
     }
 
     public userMove(col: number): void {
+        if (this.status !== GameStatus.NEW && this.status !== GameStatus.USER) {
+            throw new Error("Not user's turn!");
+        }
+
         for (let row = 6; row--; row > 0) {
             if (!this.board[row][col]) {
                 this.board[row][col] = BoardItem.USER;
+                this.status = GameStatus.HOUSE;
                 return;
             }
         }
+
         throw new Error('Column full already!');
     }
 
