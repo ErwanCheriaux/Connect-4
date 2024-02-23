@@ -4,16 +4,24 @@ enum BoardItem {
     'O' = 2,
 }
 
+enum GameStatus {
+    NEW, // new game, any player can start
+    USER, // user's turn
+    HOUSE, // house's turn
+    WIN, // user won the game
+    LOSE, // user lost the game
+}
+
 class Game {
     private board: number[][] = [];
+    private status: GameStatus = GameStatus.NEW;
 
     constructor() {
-        this.board = Array(6)
-            .fill(null)
-            .map(() => Array(7).fill(0));
+        this.newGame();
     }
 
     public newGame(): void {
+        this.status = GameStatus.NEW;
         this.board = Array(6)
             .fill(null)
             .map(() => Array(7).fill(0));
