@@ -7,10 +7,10 @@ As a house owner who wants to secure his house, I want to open my door after win
 
 ### Rules:
 
-- the board is a 6x7 grid
-- you win when you have 4 tokens connected (columns, rows, diagonals)
-- you can't play twice in a row
-- you cannot undo a move
+-   the board is a 6x7 grid
+-   you win when you have 4 tokens connected (columns, rows, diagonals)
+-   you can't play twice in a row
+-   you cannot undo a move
 
 ### Example of display:
 
@@ -27,19 +27,19 @@ Human uses X/House uses O
 
 ### Expected delivery:
 
-- a github private repository, shared with bemble & ludeeus
-- the repository must contain the code
-- your API must run into a docker container, please provide the Dockerfile within the repository
-- please commit regularly to let us understand how you go ahead
+-   a github private repository, shared with bemble & ludeeus
+-   the repository must contain the code
+-   your API must run into a docker container, please provide the Dockerfile within the repository
+-   please commit regularly to let us understand how you go ahead
 
 ### API endpoints:
 
-- [POST] /game -> start a new game, returns an empty board as displayed before
-- [GET] /board -> returns the current board with the example given
-- [PUT] /token/user/{1-7} -> put a token in the given row and return the board
-- [PUT] /token/house -> make the house play and return the board
-- [POST] /door/open -> returns 403 until you win the game
+-   [POST] /game -> start a new game, returns an empty board as displayed before
+-   [GET] /board -> returns the current board with the example given
+-   [PUT] /token/user/{1-7} -> put a token in the given row and return the board
+-   [PUT] /token/house -> make the house play and return the board
+-   [POST] /door/open -> returns 403 until you win the game
 
 ### Deadline:
 
-- March 8th 2024
+-   March 8th 2024
