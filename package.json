@@ -1,0 +1,33 @@
+{
+  "name": "connect-4",
+  "version": "1.0.0",
+  "description": "As a house owner who wants to secure his house, I want to open my door after winning a Connect4 game. You have to create the API to let me play against my house and also the AI/algorithms to make my home smart.  \r [Source](https://n8n.nabucasa.dev/webhook/2ce25dac-e576-4712-826e-97b9f06dc7a2)",
+  "main": "index.ts",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8.56.3",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.20",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "eslint": "^8.56.0",
+    "husky": "^9.0.11",
+    "prettier": "^3.2.5",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  }
+}
