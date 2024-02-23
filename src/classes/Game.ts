@@ -13,7 +13,13 @@ class Game {
             .map(() => Array(7).fill(0));
     }
 
-    public printBoard() {
+    public newGame(): void {
+        this.board = Array(6)
+            .fill(null)
+            .map(() => Array(7).fill(0));
+    }
+
+    public printBoard(): string[] {
         const screen: string[] = Array(6).fill('');
         this.board.forEach((row, n) => {
             screen[n] += '|';
