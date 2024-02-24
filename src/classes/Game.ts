@@ -81,13 +81,14 @@ class Game {
         }
     }
 
-    public printBoard(): string[] {
-        const screen: string[] = Array(6).fill('');
-        this.board.forEach((row, n) => {
-            screen[n] += '|';
+    public printBoard(): string {
+        let screen: string = '';
+        this.board.forEach((row) => {
+            screen += '|';
             row.forEach((col) => {
-                screen[n] += ScreenItem[col] + '|';
+                screen += ScreenItem[col] + '|';
             });
+            screen += '\n';
         });
 
         return screen;
