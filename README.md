@@ -43,3 +43,7 @@ Human uses X/House uses O
 ### Deadline:
 
 -   March 8th 2024
+
+## Postman collection
+
+https://api.postman.com/collections/9721186-bd9db0b1-4020-4d01-adaa-e9460a60e8d5?access_key=PMAT-01HQC7GKDNJB6927GY6193KX4Q
