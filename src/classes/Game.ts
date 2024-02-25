@@ -83,6 +83,8 @@ class Game {
 
         const columnsToPlay: number[] = [];
         const safeColumnsToPlay: number[] = [];
+        const smartColumnsToPlay: number[] = [];
+
         for (let col = 0; col < BOARD_SIZE_COL; col++) {
             if (!this.board[0][col]) columnsToPlay.push(col);
         }
@@ -112,6 +114,11 @@ class Game {
                     // exclude columns where playing will make the user win
                     else if (!row || !this.hasConnect4(row - 1, col, BoardItem.USER, true)) {
                         safeColumnsToPlay.push(col);
+
+                        // include columns where the house make a connect3
+                        if (this.hasConnect4(row, col, BoardItem.HOUSE, true, 3)) {
+                            smartColumnsToPlay.push(col);
+                        }
                     }
 
                     break;
@@ -120,7 +127,11 @@ class Game {
         }
 
         let col: number;
-        if (safeColumnsToPlay.length) {
+        if (smartColumnsToPlay.length) {
+            // play random but smart
+            const index: number = Math.floor(Math.random() * smartColumnsToPlay.length);
+            col = smartColumnsToPlay[index];
+        } else if (safeColumnsToPlay.length) {
             // play random but safe
             const index: number = Math.floor(Math.random() * safeColumnsToPlay.length);
             col = safeColumnsToPlay[index];
@@ -155,20 +166,29 @@ class Game {
     }
 
     /**
-     * Return true if the player has a connect for based on it moves in the board at row and col.
+     * Return true if the player has a connect4 based on it moves in the board at row and col.
      * If assumption is true, the player has not played yet but wants to know the outcome if it does so.
+     * By default, the function search for connect4, as the name suggests, but can search for any size.
      *
      * @private
      * @param {number} row
      * @param {number} col
      * @param {BoardItem} player
      * @param {boolean} [assumption=false]
+     * @param {number} [size=4]
      * @returns {boolean}
      */
-    private hasConnect4(row: number, col: number, player: BoardItem, assumption: boolean = false): boolean {
+    private hasConnect4(
+        row: number,
+        col: number,
+        player: BoardItem,
+        assumption: boolean = false,
+        size: number = 4,
+    ): boolean {
         let line: string;
         let rowIndex: number;
         let colIndex: number;
+        const pattern: string = player.toString().repeat(size);
 
         // horizontal
         line = '';
@@ -177,7 +197,7 @@ class Game {
             else line += this.board[row][index].toString();
         }
 
-        if (line.includes((player * 1111).toString())) return true;
+        if (line.includes(pattern)) return true;
 
         // vertical
         line = '';
@@ -186,7 +206,7 @@ class Game {
             else line += this.board[index][col].toString();
         }
 
-        if (line.includes((player * 1111).toString())) return true;
+        if (line.includes(pattern)) return true;
 
         // diagonal left-up to right-down
         line = '';
@@ -205,7 +225,7 @@ class Game {
             colIndex++;
         }
 
-        if (line.includes((player * 1111).toString())) return true;
+        if (line.includes(pattern)) return true;
 
         // diagonal left-down to right-up
         line = '';
@@ -224,9 +244,9 @@ class Game {
             colIndex++;
         }
 
-        if (line.includes((player * 1111).toString())) return true;
+        if (line.includes(pattern)) return true;
 
-        // no connect 4 detected
+        // no pattern detected
         return false;
     }
 }
