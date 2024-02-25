@@ -88,16 +88,40 @@ class Game {
             throw new Error('The board is full, house cannot play');
         }
 
-        const index: number = Math.floor(Math.random() * notFullcolumns.length);
-        const col: number = notFullcolumns[index];
+        let selectedColumn: number = -1;
+
+        // find the move to win or not lose, ...
+        for (const col of notFullcolumns) {
+            for (let row = BOARD_SIZE_ROW - 1; row >= 0; row--) {
+                if (!this.board[row][col]) {
+                    if (
+                        this.hasConnect4(row, col, BoardItem.HOUSE, true) ||
+                        this.hasConnect4(row, col, BoardItem.USER, true)
+                    ) {
+                        selectedColumn = col;
+                        break;
+                    }
+                }
+            }
+
+            if (selectedColumn >= 0) {
+                break;
+            }
+        }
+
+        // ... else play random
+        if (selectedColumn === -1) {
+            const index: number = Math.floor(Math.random() * notFullcolumns.length);
+            selectedColumn = notFullcolumns[index];
+        }
 
         for (let row = BOARD_SIZE_ROW - 1; row >= 0; row--) {
-            if (!this.board[row][col]) {
+            if (!this.board[row][selectedColumn]) {
                 // play
-                this.board[row][col] = BoardItem.HOUSE;
+                this.board[row][selectedColumn] = BoardItem.HOUSE;
 
                 // check
-                if (this.hasConnect4(row, col, BoardItem.HOUSE)) {
+                if (this.hasConnect4(row, selectedColumn, BoardItem.HOUSE)) {
                     this.status = GameStatus.LOSE;
                 } else {
                     this.status = GameStatus.USER;
@@ -121,7 +145,18 @@ class Game {
         return screen;
     }
 
-    private hasConnect4(row: number, col: number, player: BoardItem): boolean {
+    /**
+     * Return true if the player has a connect for based on it moves in the board at row and col.
+     * If assumption is true, the player has not played yet but wants to know the outcome if it does so.
+     *
+     * @private
+     * @param {number} row
+     * @param {number} col
+     * @param {BoardItem} player
+     * @param {boolean} [assumption=false]
+     * @returns {boolean}
+     */
+    private hasConnect4(row: number, col: number, player: BoardItem, assumption: boolean = false): boolean {
         let line: string;
         let rowIndex: number;
         let colIndex: number;
@@ -129,7 +164,8 @@ class Game {
         // horizontal
         line = '';
         for (let index = 0; index < BOARD_SIZE_COL; index++) {
-            line += this.board[row][index].toString();
+            if (assumption && index === col) line += player.toString();
+            else line += this.board[row][index].toString();
         }
 
         if (line.includes((player * 1111).toString())) return true;
@@ -137,7 +173,8 @@ class Game {
         // vertical
         line = '';
         for (let index = 0; index < BOARD_SIZE_ROW; index++) {
-            line += this.board[index][col].toString();
+            if (assumption && index === row) line += player.toString();
+            else line += this.board[index][col].toString();
         }
 
         if (line.includes((player * 1111).toString())) return true;
@@ -153,7 +190,10 @@ class Game {
         }
 
         while (rowIndex < BOARD_SIZE_ROW && colIndex < BOARD_SIZE_COL) {
-            line += this.board[rowIndex++][colIndex++].toString();
+            if (assumption && rowIndex === row && colIndex === col) line += player.toString();
+            else line += this.board[rowIndex][colIndex].toString();
+            rowIndex++;
+            colIndex++;
         }
 
         if (line.includes((player * 1111).toString())) return true;
@@ -169,7 +209,10 @@ class Game {
         }
 
         while (rowIndex > 0 && colIndex < BOARD_SIZE_COL) {
-            line += this.board[rowIndex--][colIndex++].toString();
+            if (assumption && rowIndex === row && colIndex === col) line += player.toString();
+            else line += this.board[rowIndex][colIndex].toString();
+            rowIndex--;
+            colIndex++;
         }
 
         if (line.includes((player * 1111).toString())) return true;
