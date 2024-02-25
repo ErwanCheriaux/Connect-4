@@ -83,7 +83,8 @@ class Game {
 
         const columnsToPlay: number[] = [];
         const safeColumnsToPlay: number[] = [];
-        const smartColumnsToPlay: number[] = [];
+        const defensiveColumnsToPlay: number[] = [];
+        const offensiveColumnsToPlay: number[] = [];
 
         for (let col = 0; col < BOARD_SIZE_COL; col++) {
             if (!this.board[0][col]) columnsToPlay.push(col);
@@ -115,9 +116,14 @@ class Game {
                     else if (!row || !this.hasConnect4(row - 1, col, BoardItem.USER, true)) {
                         safeColumnsToPlay.push(col);
 
+                        // include columns where the user make a connect3
+                        if (this.hasConnect4(row, col, BoardItem.USER, true, 3)) {
+                            defensiveColumnsToPlay.push(col);
+                        }
+
                         // include columns where the house make a connect3
                         if (this.hasConnect4(row, col, BoardItem.HOUSE, true, 3)) {
-                            smartColumnsToPlay.push(col);
+                            offensiveColumnsToPlay.push(col);
                         }
                     }
 
@@ -127,10 +133,14 @@ class Game {
         }
 
         let col: number;
-        if (smartColumnsToPlay.length) {
+        if (defensiveColumnsToPlay.length) {
+            // play random but blocking opponent strategy
+            const index: number = Math.floor(Math.random() * defensiveColumnsToPlay.length);
+            col = defensiveColumnsToPlay[index];
+        } else if (offensiveColumnsToPlay.length) {
             // play random but smart
-            const index: number = Math.floor(Math.random() * smartColumnsToPlay.length);
-            col = smartColumnsToPlay[index];
+            const index: number = Math.floor(Math.random() * offensiveColumnsToPlay.length);
+            col = offensiveColumnsToPlay[index];
         } else if (safeColumnsToPlay.length) {
             // play random but safe
             const index: number = Math.floor(Math.random() * safeColumnsToPlay.length);
