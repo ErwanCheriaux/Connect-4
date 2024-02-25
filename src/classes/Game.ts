@@ -41,8 +41,12 @@ class Game {
     }
 
     public userMove(col: number): void {
-        if (this.status !== GameStatus.NEW && this.status !== GameStatus.USER) {
+        if (this.status === GameStatus.HOUSE) {
             throw new Error("Not user's turn!");
+        }
+
+        if (this.status === GameStatus.WIN || this.status === GameStatus.LOSE) {
+            throw new Error('The game is over!');
         }
 
         if (this.board[0][col]) {
@@ -67,8 +71,12 @@ class Game {
     }
 
     public houseMove(): void {
-        if (this.status !== GameStatus.NEW && this.status !== GameStatus.HOUSE) {
+        if (this.status === GameStatus.USER) {
             throw new Error("Not house's turn!");
+        }
+
+        if (this.status === GameStatus.WIN || this.status === GameStatus.LOSE) {
+            throw new Error('The game is over!');
         }
 
         const notFullcolumns: number[] = [];
