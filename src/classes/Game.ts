@@ -68,6 +68,8 @@ class Game {
                 return;
             }
         }
+
+        throw new Error('Oops! Something went wrong...');
     }
 
     public houseMove(): void {
@@ -89,17 +91,22 @@ class Game {
             throw new Error('The board is full, house cannot play');
         }
 
-        let selectedColumn: number = -1;
-
+        // search best move
         for (const col of columnsToPlay) {
             for (let row = BOARD_SIZE_ROW - 1; row >= 0; row--) {
                 if (!this.board[row][col]) {
-                    // find the move to win or not lose, ...
-                    if (
-                        this.hasConnect4(row, col, BoardItem.HOUSE, true) ||
-                        this.hasConnect4(row, col, BoardItem.USER, true)
-                    ) {
-                        selectedColumn = col;
+                    // find the move to win
+                    if (this.hasConnect4(row, col, BoardItem.HOUSE, true)) {
+                        this.board[row][col] = BoardItem.HOUSE;
+                        this.status = GameStatus.LOSE;
+                        return;
+                    }
+
+                    // find the move to not lose
+                    else if (this.hasConnect4(row, col, BoardItem.USER, true)) {
+                        this.board[row][col] = BoardItem.HOUSE;
+                        this.status = GameStatus.USER;
+                        return;
                     }
 
                     // exclude columns where playing will make the user win
@@ -110,37 +117,28 @@ class Game {
                     break;
                 }
             }
-
-            if (selectedColumn >= 0) {
-                break;
-            }
         }
 
-        if (selectedColumn === -1 && safeColumnsToPlay.length) {
-            // ... else play random but safe
+        let col: number;
+        if (safeColumnsToPlay.length) {
+            // play random but safe
             const index: number = Math.floor(Math.random() * safeColumnsToPlay.length);
-            selectedColumn = safeColumnsToPlay[index];
-        } else if (selectedColumn === -1) {
-            // ... else play random, you lost already and you know it!
+            col = safeColumnsToPlay[index];
+        } else {
+            // play random, but you lost already and you know it!
             const index: number = Math.floor(Math.random() * columnsToPlay.length);
-            selectedColumn = columnsToPlay[index];
+            col = columnsToPlay[index];
         }
 
         for (let row = BOARD_SIZE_ROW - 1; row >= 0; row--) {
-            if (!this.board[row][selectedColumn]) {
-                // play
-                this.board[row][selectedColumn] = BoardItem.HOUSE;
-
-                // check
-                if (this.hasConnect4(row, selectedColumn, BoardItem.HOUSE)) {
-                    this.status = GameStatus.LOSE;
-                } else {
-                    this.status = GameStatus.USER;
-                }
-
+            if (!this.board[row][col]) {
+                this.board[row][col] = BoardItem.HOUSE;
+                this.status = GameStatus.USER;
                 return;
             }
         }
+
+        throw new Error('Oops! Something went wrong...');
     }
 
     public printBoard(): string {
