@@ -79,28 +79,35 @@ class Game {
             throw new Error('The game is over!');
         }
 
-        const notFullcolumns: number[] = [];
+        const columnsToPlay: number[] = [];
+        const safeColumnsToPlay: number[] = [];
         for (let col = 0; col < BOARD_SIZE_COL; col++) {
-            if (!this.board[0][col]) notFullcolumns.push(col);
+            if (!this.board[0][col]) columnsToPlay.push(col);
         }
 
-        if (!notFullcolumns.length) {
+        if (!columnsToPlay.length) {
             throw new Error('The board is full, house cannot play');
         }
 
         let selectedColumn: number = -1;
 
-        // find the move to win or not lose, ...
-        for (const col of notFullcolumns) {
+        for (const col of columnsToPlay) {
             for (let row = BOARD_SIZE_ROW - 1; row >= 0; row--) {
                 if (!this.board[row][col]) {
+                    // find the move to win or not lose, ...
                     if (
                         this.hasConnect4(row, col, BoardItem.HOUSE, true) ||
                         this.hasConnect4(row, col, BoardItem.USER, true)
                     ) {
                         selectedColumn = col;
-                        break;
                     }
+
+                    // exclude columns where playing will make the user win
+                    else if (!row || !this.hasConnect4(row - 1, col, BoardItem.USER, true)) {
+                        safeColumnsToPlay.push(col);
+                    }
+
+                    break;
                 }
             }
 
@@ -109,10 +116,14 @@ class Game {
             }
         }
 
-        // ... else play random
-        if (selectedColumn === -1) {
-            const index: number = Math.floor(Math.random() * notFullcolumns.length);
-            selectedColumn = notFullcolumns[index];
+        if (selectedColumn === -1 && safeColumnsToPlay.length) {
+            // ... else play random but safe
+            const index: number = Math.floor(Math.random() * safeColumnsToPlay.length);
+            selectedColumn = safeColumnsToPlay[index];
+        } else if (selectedColumn === -1) {
+            // ... else play random, you lost already and you know it!
+            const index: number = Math.floor(Math.random() * columnsToPlay.length);
+            selectedColumn = columnsToPlay[index];
         }
 
         for (let row = BOARD_SIZE_ROW - 1; row >= 0; row--) {
