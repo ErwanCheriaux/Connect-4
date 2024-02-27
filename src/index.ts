@@ -8,7 +8,11 @@ import { router as tokenRoutes } from './routes/token';
 import { router as doorRoutes } from './routes/door';
 
 //For env File
-dotenv.config();
+if (process.env.NODE_ENV === 'test') {
+    dotenv.config({ path: '.env.test' });
+} else {
+    dotenv.config();
+}
 
 const app: Application = express();
 const port = process.env.PORT || 8000;
