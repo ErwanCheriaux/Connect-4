@@ -176,17 +176,9 @@ class Game {
     }
 
     /**
-     * Return true if the player has a connect4 based on it moves in the board at row and col.
-     * If assumption is true, the player has not played yet but wants to know the outcome if it does so.
-     * By default, the function search for connect4, as the name suggests, but can search for any size.
-     *
-     * @private
-     * @param {number} row
-     * @param {number} col
-     * @param {BoardItem} player
-     * @param {boolean} [assumption=false]
-     * @param {number} [size=4]
-     * @returns {boolean}
+     * Return true if the player has a Connect4 based on its moves on the board at the specified row and column.
+     * If assumption is true, the player has not yet played but wants to know the outcome if they do so.
+     * By default, the function searches for Connect4, as the name suggests, but it can search for any size.
      */
     private hasConnect4(
         row: number,
@@ -196,34 +188,41 @@ class Game {
         size: number = 4,
     ): boolean {
         let line: string;
+        let middle: number;
         let rowIndex: number;
         let colIndex: number;
         const pattern: string = player.toString().repeat(size);
 
         // horizontal
         line = '';
+        middle = col;
         for (let index = 0; index < BOARD_SIZE_COL; index++) {
             if (assumption && index === col) line += player.toString();
             else line += this.board[row][index].toString();
         }
 
+        line = line.slice(Math.max(0, middle - size + 1), Math.min(middle + size, line.length));
         if (line.includes(pattern)) return true;
 
         // vertical
         line = '';
+        middle = row;
         for (let index = 0; index < BOARD_SIZE_ROW; index++) {
             if (assumption && index === row) line += player.toString();
             else line += this.board[index][col].toString();
         }
 
+        line = line.slice(Math.max(0, middle - size + 1), Math.min(middle + size, line.length));
         if (line.includes(pattern)) return true;
 
         // diagonal left-up to right-down
         line = '';
+        middle = 0;
         rowIndex = row;
         colIndex = col;
 
         while (rowIndex > 0 && colIndex > 0) {
+            middle++;
             rowIndex--;
             colIndex--;
         }
@@ -235,25 +234,29 @@ class Game {
             colIndex++;
         }
 
+        line = line.slice(Math.max(0, middle - size + 1), Math.min(middle + size, line.length));
         if (line.includes(pattern)) return true;
 
         // diagonal left-down to right-up
         line = '';
+        middle = 0;
         rowIndex = row;
         colIndex = col;
 
         while (rowIndex < BOARD_SIZE_ROW - 1 && colIndex > 0) {
+            middle++;
             rowIndex++;
             colIndex--;
         }
 
-        while (rowIndex > 0 && colIndex < BOARD_SIZE_COL) {
+        while (rowIndex >= 0 && colIndex < BOARD_SIZE_COL) {
             if (assumption && rowIndex === row && colIndex === col) line += player.toString();
             else line += this.board[rowIndex][colIndex].toString();
             rowIndex--;
             colIndex++;
         }
 
+        line = line.slice(Math.max(0, middle - size + 1), Math.min(middle + size, line.length));
         if (line.includes(pattern)) return true;
 
         // no pattern detected
