@@ -9,6 +9,7 @@ Author: Erwan Cheriaux
 -   Svelte
 -   Docker
 -   Jest
+-   Github Actions
 
 ### Quick start:
 
@@ -19,7 +20,9 @@ Execute the following commands to run both server and client on localhost.
 
 ```console
 npm install
-npm install --prefix client
+cd client
+npm install
+cd ..
 npm run dev
 ```
 
