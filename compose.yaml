@@ -8,9 +8,22 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
+    client:
+        build:
+            context: client
+            target: final
+        environment:
+            NODE_ENV: production
+        restart: always
+        depends_on:
+            - server
+        ports:
+            - 4173:3000
+
     server:
         build:
             context: .
+            target: final
         environment:
             NODE_ENV: production
         ports:
