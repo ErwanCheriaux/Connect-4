@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'test') {
 
 // Enable CORS for a specific origin
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'http://localhost:4173'],
     credentials: true,
 };
 
