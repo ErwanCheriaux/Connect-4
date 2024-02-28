@@ -1,5 +1,54 @@
 # Connect-4
 
+Author: Erwan Cheriaux
+
+### Tech stack:
+
+-   Node.js
+-   Typescript
+-   Svelte
+-   Docker
+-   Jest
+
+### Quick start:
+
+Execute the following commands to run both server and client on localhost.
+
+-   Server should be running at http://localhost:8000
+-   Client should be running at http://localhost:5173
+
+```console
+npm install
+npm install --prefix client
+npm run dev
+```
+
+Execute the following commands to run both server and client images with docker.
+
+-   Server should be running at http://localhost:8000
+-   Client should be running at http://localhost:4173 (**Not the same port as above!**)
+
+```console
+docker compose up --build
+```
+
+### Postman collection:
+
+Collection of all API endpoints implemented on the server running at http://localhost:8000
+
+https://api.postman.com/collections/9721186-bd9db0b1-4020-4d01-adaa-e9460a60e8d5?access_key=PMAT-01HQC7GKDNJB6927GY6193KX4Q
+
+### Docker images:
+
+Docker images available on https://hub.docker.com, run the following command to get these images
+
+```console
+docker pull erwancheriaux/connect-4-server:final
+docker pull erwancheriaux/connect-4-client:final
+```
+
+---
+
 ### Subject:
 
 As a house owner who wants to secure his house, I want to open my door after winning a Connect4 game. You have to create the API to let me play against my house and also the AI/algorithms to make my home smart.  
@@ -43,7 +92,3 @@ Human uses X/House uses O
 ### Deadline:
 
 -   March 8th 2024
-
-## Postman collection
-
-https://api.postman.com/collections/9721186-bd9db0b1-4020-4d01-adaa-e9460a60e8d5?access_key=PMAT-01HQC7GKDNJB6927GY6193KX4Q
