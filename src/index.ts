@@ -1,6 +1,7 @@
 import express, { Request, Response, Application } from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+import cors from 'cors';
 
 import { router as gameRoutes } from './routes/game';
 import { router as boardRoutes } from './routes/board';
@@ -14,11 +15,18 @@ if (process.env.NODE_ENV === 'test') {
     dotenv.config();
 }
 
+// Enable CORS for a specific origin
+const corsOptions = {
+    origin: 'http://localhost:5173',
+    credentials: true,
+};
+
 const app: Application = express();
 const port = process.env.PORT || 8000;
 
 // Install middleware
 app.use(morgan('tiny'));
+app.use(cors(corsOptions));
 
 // Install routes
 app.use('/game', gameRoutes);
