@@ -3,7 +3,13 @@
 
     const api = import.meta.env.API_URI || 'http://localhost:8000';
 
-    let screen: string = '';
+    let boardDisplay: string = '';
+    const horizontalLineDisplay: string = '---------------\n';
+    const columnDisplay: string = ' 1 2 3 4 5 6 7 ';
+
+    $: screen = boardDisplay + horizontalLineDisplay + columnDisplay;
+
+    let selectedColumn: number;
 
     const handleNewGame = async () => {
         try {
@@ -14,17 +20,87 @@
                 console.error('Error starting a new game:', error);
             }
 
-            screen = await response.text();
+            boardDisplay = await response.text();
         } catch (error: unknown) {
             console.error('Error starting a new game:', error);
         }
     };
 
-    onMount(handleNewGame);
+    const handleFetchBoard = async () => {
+        try {
+            const response = await fetch(`${api}/board`, { method: 'GET' });
+
+            if (!response.ok) {
+                const error = await response.json();
+                console.error('Error fetching the board:', error);
+            }
+
+            boardDisplay = await response.text();
+        } catch (error: unknown) {
+            console.error('Error fetching the board:', error);
+        }
+    };
+
+    const handleUserMove = async (col: number) => {
+        try {
+            const response = await fetch(`${api}/token/user/${col}`, { method: 'PUT' });
+
+            if (!response.ok) {
+                const error = await response.json();
+                console.error('Error user move:', error);
+            }
+
+            boardDisplay = await response.text();
+        } catch (error: unknown) {
+            console.error('Error user move:', error);
+        }
+    };
+
+    const handleHouseMove = async () => {
+        try {
+            const response = await fetch(`${api}/token/house`, { method: 'PUT' });
+
+            if (!response.ok) {
+                const error = await response.json();
+                console.error('Error house move:', error);
+            }
+
+            boardDisplay = await response.text();
+        } catch (error: unknown) {
+            console.error('Error house move:', error);
+        }
+    };
+
+    const handleStartNewGame = async () => {
+        await handleNewGame();
+
+        // 50% chance that the house will make the first move
+        const houseStart = Math.floor(Math.random() * 2);
+        if (houseStart) await handleHouseMove();
+    };
+
+    const handlePlay = async (column: number) => {
+        await handleUserMove(column);
+
+        // set an artificial delay so as not to disturb the user
+        setTimeout(async () => {
+            await handleHouseMove();
+        }, 500);
+    };
+
+    onMount(handleFetchBoard);
 </script>
 
 <h1>Welcome to your door security interface</h1>
 <p>You must win Connect4 to open the door... good luck!</p>
 <pre>{screen}</pre>
 
-<button on:click={handleNewGame}>New game</button>
+<label for="column">Choose a column:</label>
+<select id="column" bind:value={selectedColumn}>
+    {#each [1, 2, 3, 4, 5, 6, 7, 8, 9] as column}
+        <option value={column}>{column}</option>
+    {/each}
+</select>
+<button on:click={() => handlePlay(selectedColumn)}>Play</button>
+<button on:click={handleFetchBoard}>Refresh</button>
+<button on:click={handleStartNewGame}>New game</button>
