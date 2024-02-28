@@ -11,6 +11,7 @@
 
     let selectedColumn: number = 1;
     let doorMessage: string = 'The door is closed.';
+    let errorMessage: string = '';
 
     const handleNewGame = async () => {
         try {
@@ -19,6 +20,9 @@
             if (!response.ok) {
                 const error = await response.json();
                 console.error('Error starting a new game:', error);
+                errorMessage = error.message;
+            } else {
+                errorMessage = '';
             }
 
             boardDisplay = await response.text();
@@ -34,6 +38,9 @@
             if (!response.ok) {
                 const error = await response.json();
                 console.error('Error fetching the board:', error);
+                errorMessage = error.message;
+            } else {
+                errorMessage = '';
             }
 
             boardDisplay = await response.text();
@@ -49,6 +56,9 @@
             if (!response.ok) {
                 const error = await response.json();
                 console.error('Error user move:', error);
+                errorMessage = error.message;
+            } else {
+                errorMessage = '';
             }
 
             boardDisplay = await response.text();
@@ -64,6 +74,9 @@
             if (!response.ok) {
                 const error = await response.json();
                 console.error('Error house move:', error);
+                errorMessage = error.message;
+            } else {
+                errorMessage = '';
             }
 
             boardDisplay = await response.text();
@@ -113,6 +126,7 @@
     {/each}
 </select>
 <button on:click={() => handlePlay(selectedColumn)}>Play</button>
+{#if errorMessage}<small class="error">{errorMessage}</small>{/if}
 
 <br />
 <br />
@@ -120,3 +134,9 @@
 <button on:click={handleOpenDoor}>Open the door</button>
 <button on:click={handleStartNewGame}>New game</button>
 <p>{doorMessage}</p>
+
+<style>
+    .error {
+        color: red;
+    }
+</style>
