@@ -9,7 +9,8 @@
 
     $: screen = boardDisplay + horizontalLineDisplay + columnDisplay;
 
-    let selectedColumn: number;
+    let selectedColumn: number = 1;
+    let doorMessage: string = 'The door is closed.';
 
     const handleNewGame = async () => {
         try {
@@ -71,6 +72,15 @@
         }
     };
 
+    const handleOpenDoor = async () => {
+        try {
+            const response = await fetch(`${api}/door/open`, { method: 'POST' });
+            doorMessage = await response.text();
+        } catch (error: unknown) {
+            console.error('Error opening the door:', error);
+        }
+    };
+
     const handleStartNewGame = async () => {
         await handleNewGame();
 
@@ -96,11 +106,17 @@
 <pre>{screen}</pre>
 
 <label for="column">Choose a column:</label>
+<br />
 <select id="column" bind:value={selectedColumn}>
     {#each [1, 2, 3, 4, 5, 6, 7, 8, 9] as column}
         <option value={column}>{column}</option>
     {/each}
 </select>
 <button on:click={() => handlePlay(selectedColumn)}>Play</button>
-<button on:click={handleFetchBoard}>Refresh</button>
+
+<br />
+<br />
+
+<button on:click={handleOpenDoor}>Open the door</button>
 <button on:click={handleStartNewGame}>New game</button>
+<p>{doorMessage}</p>
