@@ -121,7 +121,7 @@
 <label for="column">Choose a column:</label>
 <br />
 <select id="column" bind:value={selectedColumn}>
-    {#each [1, 2, 3, 4, 5, 6, 7, 8, 9] as column}
+    {#each [1, 2, 3, 4, 5, 6, 7] as column}
         <option value={column}>{column}</option>
     {/each}
 </select>
